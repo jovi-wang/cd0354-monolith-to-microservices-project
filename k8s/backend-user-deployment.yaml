@@ -18,19 +18,31 @@ spec:
         - image: joviwang2017/udagram-api-user
           name: backend-user
           imagePullPolicy: Always
-          # resources:
-          #   requests:
-          #     memory: '512Mi'
-          #     cpu: '500m'
-          #   limits:
-          #     memory: '1024Mi'
-          #     cpu: '1000m'
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: '1024Mi'
+              cpu: '250m'
+            limits:
+              memory: '2048Mi'
+              cpu: '500m'
           env:
             - name: URL
               valueFrom:
                 configMapKeyRef:
                   name: env-config
                   key: URL
+            - name: AWS_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: AWS_BUCKET
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: AWS_REGION
             - name: JWT_SECRET
               valueFrom:
                 configMapKeyRef:
@@ -48,12 +60,22 @@ spec:
                   key: POSTGRES_HOST
             - name: POSTGRES_PASSWORD
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: env-secret
                   key: POSTGRES_PASSWORD
             - name: POSTGRES_USERNAME
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: env-secret
                   key: POSTGRES_USERNAME
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: AWS_ACCESS_KEY
       restartPolicy: Always
